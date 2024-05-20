@@ -10,6 +10,8 @@ urlpatterns = [
     path('', include("address.urls")),
     path('', include("customer.urls")),
     path('', include("product.urls")),
+    path('', include("userauthapp.urls")),
+    path('api/v1/', include("api.urls")),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

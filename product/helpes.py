@@ -8,10 +8,17 @@ class SaveImages(object):
         return f"product/{uuid.uuid4()}.{image_extension}"
 
 
+class SaveImagesCategory(object):
+    def product_images_path(instance, filename):
+        image_extension = filename.split('.')[-1]
+        return f"category/{uuid.uuid4()}.{image_extension}"
+
+
 class CategoryChoise(TextChoices):
     men = "men", "men"
     women = "women", "women"
     kids = "kids", "kids"
+    all = "all", "all"
 
 
 class ColorChoise(TextChoices):

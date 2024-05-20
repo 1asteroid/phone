@@ -10,8 +10,13 @@ class Customer(models.Model):
 
 
 class Order(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    slug = models.SlugField(verbose_name="slug", max_length=100, null=True, blank=False, unique=True)
     date_ordered = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        name = User.objects.get(username=self.user).first_name
+        return f"order of {name}"
 
 
 class OrderItems(models.Model):

@@ -34,10 +34,15 @@ INSTALLED_APPS = [
     'address',
     'customer',
     'product',
+    "api",
+    'userauthapp',
 
-    # extensions
-    "import_export",
-    "import_export_extensions",
+
+    'django_extensions',
+    'import_export',
+    "rest_framework",
+    "rest_framework.authtoken",
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -55,7 +60,7 @@ ROOT_URLCONF = 'sales.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -139,3 +144,5 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_URL = '/accounts/login/'
