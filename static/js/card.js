@@ -11,13 +11,17 @@ for(var i = 0; i < updateBtns.length; i++){
             console.log('Not loggin in')
         }else{
             console.log('User is logged in sending data ...')
+            return updateUserOrder(productId, action)
         }
     })
 }
 
 function updateUserOrder(productId, action){
-    console.log('User is logged in , sending data...')
-    var url = '/update_item/'
+    console.log('User is logged in , sending data... updateorder')
+    var url = 'update_item/'
+
+    console.log("URL: ", url)
+    console.log("productId: ", productId)
 
     fetch(url,{
         method:'POST',
@@ -34,5 +38,6 @@ function updateUserOrder(productId, action){
 
     .then((data)=>{
             console.log('data:',  data)
+            location.reload()
         })
 }

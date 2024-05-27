@@ -1,7 +1,10 @@
+from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Product, SubCategory
+from customer.models import Order, OrderItems
+from customer.views import count_item_product
 
 
 class BaseView(View):
@@ -23,7 +26,7 @@ class HomePageView(View):
 
         name = request.GET.get('name')
         category_id = request.GET.get('category_id')
-        print(category_id)
+
         if category_id:
             products = products.filter(subcategory=category_id)
 
@@ -34,7 +37,10 @@ class HomePageView(View):
             "products": products,
             "subcategories": subcategories,
             "recent_products": products.order_by("-data_added"),
+            'items_count': count_item_product(request)
         }
         return render(request, "main/index.html", context)
+
+
 
 

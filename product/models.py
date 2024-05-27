@@ -18,6 +18,12 @@ class SubCategory(models.Model):
         count = p.filter(subcategory=self).count()
         return count
 
+    class Meta:
+        ordering = ["id"]
+        indexes = [
+            models.Index(fields=['id'])
+        ]
+
 
 class Product(models.Model):
     name = models.CharField(max_length=200)
@@ -67,3 +73,9 @@ class Review(models.Model):
     def get_user_name(self):
         user = User.objects.get(id=self.user)
         return f"{user.first_name} {user.last_name}"
+
+    class Meta:
+        ordering = ["id"]
+        indexes = [
+            models.Index(fields=['id'])
+        ]

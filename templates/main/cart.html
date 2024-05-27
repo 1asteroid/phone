@@ -39,20 +39,20 @@
                             <td class="align-middle">
                                 <div class="input-group quantity mx-auto" style="width: 100px;">
                                     <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
+                                        <button data-product="{{item.product.id}}" class="btn btn-sm btn-primary btn-minus update-cart" data-action="remove">
                                             <i class="fa fa-minus-square"></i>
                                         </button>
                                     </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="1">
+                                    <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="{{ item.quantity }}">
                                     <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus update-cart">
+                                        <button data-product="{{item.product.id}}" class="btn btn-sm btn-primary btn-plus update-cart" data-action="add">
                                             <i class="fa fa-plus"></i>
                                         </button>
                                     </div>
                                 </div>
                             </td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button></td>
+                            <td class="align-middle">${{item.total_item}}</td>
+                            <td class="align-middle"><button data-product="{{item.product.id}}" class="btn btn-sm btn-danger update-cart" data-action="clear"><i class="fa fa-times"></i></button></td>
                         </tr>
                     {% endfor %}
 
@@ -70,20 +70,11 @@
                 </form>
                 <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Cart Summary</span></h5>
                 <div class="bg-light p-30 mb-5">
-                    <div class="border-bottom pb-2">
-                        <div class="d-flex justify-content-between mb-3">
-                            <h6>Subtotal</h6>
-                            <h6>$150</h6>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <h6 class="font-weight-medium">Shipping</h6>
-                            <h6 class="font-weight-medium">$10</h6>
-                        </div>
-                    </div>
+
                     <div class="pt-2">
                         <div class="d-flex justify-content-between mt-2">
                             <h5>Total</h5>
-                            <h5>$160</h5>
+                            <h5>${{total}}</h5>
                         </div>
                         <button class="btn btn-block btn-primary font-weight-bold my-3 py-3">Proceed To Checkout</button>
                     </div>

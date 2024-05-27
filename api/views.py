@@ -55,7 +55,7 @@ class ProductAPIViewSet(ModelViewSet):
     filter_backends = (filters.SearchFilter, )
     search_fields = ['name', "category"]
     pagination_class = LimitOffsetPagination
-    # permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, )
 
     @action(detail=True, methods=["GET"])
     def count(self, request, *args, **kwargs):

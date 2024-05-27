@@ -14,6 +14,12 @@ class Order(models.Model):
     slug = models.SlugField(verbose_name="slug", max_length=100, null=True, blank=False, unique=True)
     date_ordered = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ["id"]
+        indexes = [
+            models.Index(fields=['id'])
+        ]
+
     def __str__(self):
         name = User.objects.get(username=self.user).first_name
         return f"order of {name}"
@@ -22,6 +28,14 @@ class Order(models.Model):
 class OrderItems(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
+    quantity = models.PositiveIntegerField(default=0)
     date_added = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ["id"]
+        indexes = [
+            models.Index(fields=['id'])
+        ]
+
+    def total_item(self):
+        return self.product.price * self.quantity

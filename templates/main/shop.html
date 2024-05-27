@@ -195,9 +195,9 @@
                         </div>
 
                         <div class="d-flex justify-content-center flex-lg-wrap">
-                            <a href="{% url 'product-detail' product.slug %}" class="btn border border-secondary rounded-pill px-3 text-primary " style="background-color: #333333;"><i class="fas fa-info-circle"></i> View details</a>
+                            <a href="{% url 'shop-detail' product.slug %}" class="btn border border-secondary rounded-pill px-3 text-primary " style="background-color: #333333;"><i class="fas fa-info-circle"></i> View details</a>
+<!--                            <button data-product="{{product.id}}" data-action="toShopAdd" class="btn border border-secondary rounded-pill px-3 text-primary update-cart" style="background-color: green;"><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</button>-->
                             <button data-product="{{product.id}}" data-action="add" class="btn border border-secondary rounded-pill px-3 text-primary update-cart" style="background-color: green;"><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</button>
-
                         </div>
                     </div>
                 </div>

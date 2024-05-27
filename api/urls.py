@@ -35,7 +35,7 @@ router.register('delivery-address', DeliveryAddressAPIViewSet)
 
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('', include(router.urls), name='api'),
     path('auth/', views.obtain_auth_token),
     path('swagger/', schema_view.with_ui("swagger", cache_timeout=0), name='swagger'),
     path('redoc/', schema_view.with_ui("redoc", cache_timeout=0), name='redoc'),
