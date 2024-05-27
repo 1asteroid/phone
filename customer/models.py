@@ -29,6 +29,7 @@ class OrderItems(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=0)
+    complete = models.BooleanField(default=False)
     date_added = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -39,3 +40,13 @@ class OrderItems(models.Model):
 
     def total_item(self):
         return self.product.price * self.quantity
+
+    def check_count(self):
+        if self.complete and self.product.max_count < self.quantity:
+            self.quantity = self.product.max_count
+
+
+class Appeal(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.TextField()
+    answered = models.BooleanField(default=False)

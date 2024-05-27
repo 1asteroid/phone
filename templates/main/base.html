@@ -140,7 +140,7 @@
                         <div class="navbar-nav mr-auto py-0 ">
                             <a href="{% url 'home' %}" class="nav-item nav-link">Home</a>
                             <a href="{% url 'shop' %}" class="nav-item nav-link">Shop</a>
-                            <a href="contact.html" class="nav-item nav-link">Contact</a>
+                            <a href="{% url 'contact' %}" class="nav-item nav-link">Contact</a>
                         </div>
 
                         <div class="navbar-nav ml-auto py-0 d-none d-lg-block">
@@ -275,26 +275,114 @@
             }
         });
     });
-    // document.addEventListener('DOMContentLoaded', function () {
-    //     var quantityInput = document.querySelector('.quantity input');
-    //     var btnMinus = document.querySelector('.btn-minus');
-    //     var btnPlus = document.querySelector('.btn-plus');
-    //
-    //     btnMinus.addEventListener('click', function () {
-    //         var currentValue = parseInt(quantityInput.value);
-    //         if (!isNaN(currentValue) && currentValue > 1) {
-    //             quantityInput.value = currentValue - 1;
-    //         }
-    //     });
-    //
-    //     btnPlus.addEventListener('click', function () {
-    //         var currentValue = parseInt(quantityInput.value);
-    //         if (!isNaN(currentValue)) {
-    //             quantityInput.value = currentValue + 1;
-    //             console.log(quantityInput.value)
-    //         }
-    //     });
-    // });
+
+    function renderStars(rating) {
+            const starContainer = document.getElementById('star-rating' || 'star-rating-index');
+            starContainer.innerHTML = '';
+
+            for (let i = 1; i <= 5; i++) {
+                const star = document.createElement('small');
+                if (rating >= i) {
+                    star.classList.add('fas', 'fa-star');
+                } else if (rating >= i - 0.5) {
+                    star.classList.add('fas', 'fa-star-half-alt');
+                } else {
+                    star.classList.add('far', 'fa-star');
+                }
+
+                starContainer.appendChild(star);
+            }
+        }
+
+        window.onload = function() {
+            const starContainer1 = document.getElementById('star-rating' || 'star-rating-index');
+            const avgRating = parseFloat(starContainer1.getAttribute('data-avg-rating'));
+            renderStars(avgRating);
+
+            const reviewElements = document.querySelectorAll('[id^="rating-"]');
+
+            reviewElements.forEach(element => {
+                const rating     = parseFloat(element.getAttribute('data-review-rating'));
+                renderStars1(element, rating);
+            });
+
+            function renderStars1(element, rating) {
+                const starCount = 5;
+                let stars = '';
+
+                for(let i=1; i <= Math.floor(rating); i++){
+                    stars += '<span class="fa fa-star checked"></span>';
+                }
+
+                const numb = rating - Math.floor(rating)
+                console.log(numb)
+                if(numb <= 0.5 && 0.5 - numb <= 0.25) {
+                    stars += '<span class="fa fa-star-half checked"></span>';
+                } else if(numb > 0.5 && 1 - numb <= 0.25) {
+                    stars += '<span class="fa fa-star checked"></span>';
+                } else if(numb > 0.5 && 1 - numb >= 0.25) {
+                    stars += '<span class="fa fa-star-half checked"></span>';
+                } else if(numb < 0.5 && 0.5 - numb >= 0.25) {
+                    stars += '<span class="fa fa-star-half-o"></span>';
+                    console.log(true)
+                }
+
+                element.innerHTML = stars;
+            }
+        };
+
+                document.addEventListener('DOMContentLoaded', function() {
+            const stars = document.querySelectorAll('#starRating .fa-star');
+            const ratingInput = document.getElementById('ratingInput');
+
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    const ratingValue = this.getAttribute('data-value');
+                    ratingInput.value = ratingValue;
+                    updateStars(ratingValue);
+                });
+            });
+
+            function updateStars(rating) {
+                stars.forEach(star => {
+                    if (star.getAttribute('data-value') <= rating) {
+                        star.classList.add('checked');
+                        star.classList.remove('far');
+                        star.classList.add('fas');
+                    } else {
+                        star.classList.remove('checked');
+                        star.classList.remove('fas');
+                        star.classList.add('far');
+                    }
+                });
+            }
+
+            const reviewForm = document.getElementById('reviewForm');
+            reviewForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(reviewForm);
+
+                fetch('/submit-review/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'), // Django CSRF token
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Review submitted successfully!');
+                    } else {
+                        alert('Error submitting review.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
+
 </script>
 
 
@@ -313,6 +401,7 @@
     <!-- Template Javascript -->
     <script src="../../static/js/main.js"></script>
     <script src="../../static/js/card.js"></script>
+
 </body>
 
 

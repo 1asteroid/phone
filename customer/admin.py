@@ -3,7 +3,7 @@ import uuid
 from django.contrib import admin
 from django.utils.text import slugify
 
-from .models import Customer, Order, OrderItems
+from .models import Customer, Order, OrderItems, Appeal
 from import_export.admin import ImportExportModelAdmin
 
 
@@ -37,3 +37,12 @@ class CountryAdmin(ImportExportModelAdmin):
     search_fields = ("id", )
     search_help_text = f'search in: {" or ".join(search_fields)}'
     ordering = ('id', )
+
+
+@admin.register(Appeal)
+class AppealAdmin(ImportExportModelAdmin):
+    list_display = ('id', 'user', 'message')
+    list_display_links = ('id', 'user', 'message')
+    search_fields = ('id', 'user')
+    search_help_text = f'search in: {" or ".join(search_fields)}'
+    ordering = ('id',)

@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Product, SubCategory
-from customer.models import Order, OrderItems
+from customer.models import Order, OrderItems, Appeal
 from customer.views import count_item_product
 
 
@@ -42,5 +42,22 @@ class HomePageView(View):
         return render(request, "main/index.html", context)
 
 
+class ContactPageView(LoginRequiredMixin, View):
+    def get(self, request):
+        return render(request, "main/contact.html", {'items_count': count_item_product(request)})
+
+    def post(self, request):
+        form = request.POST
+        message = form['message']
+        if message:
+            appeal = Appeal()
+            appeal.user = request.user
+            appeal.message = message
+            appeal.save()
+            print("saved")
+
+            return render(request, 'main/contact.html', {'items_count': count_item_product(request), 'formReply': "So'rov qabul qilindi"})
+
+        return render(request, 'main/contact.html', {'items_count': count_item_product(request)})
 
 

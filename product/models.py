@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Avg
 from django.utils.text import slugify
 from rest_framework.reverse import reverse
 
@@ -58,6 +59,15 @@ class Product(models.Model):
         self.slug = slugify(f"{self.name}{uuid.uuid4()}")
 
         return super().save(*args, **kwargs)
+
+    def delete_product(self):
+        if self.max_count == 0:
+            self.delete()
+
+    def avg_rating(self):
+
+        avg = Review.objects.filter(product=self).aggregate(Avg('rating'))['rating__avg']
+        return avg
 
 
 class Review(models.Model):

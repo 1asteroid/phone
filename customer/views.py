@@ -7,6 +7,7 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from product.models import Product, SubCategory, Review
 from customer.models import Order, OrderItems
+from address.models import City, DeliveryAddress
 from django.views.decorators.csrf import csrf_exempt
 
 
@@ -24,6 +25,7 @@ class ShopPageView(LoginRequiredMixin, View):
 
         name = request.GET.get('name')
         category = request.GET.get('category')
+
 
         if category:
             products = products.filter(category_icontains=category)
@@ -63,6 +65,7 @@ class ShopDetailsView(LoginRequiredMixin, View):
             'reviews': reviews,
             "rev_count": reviews.count,
             "avg_rating": product_ratings[f'{only_product[0].id}'],
+            'items_count': count_item_product(request),
         }
         return render(request, "main/detail.html", context)
 
@@ -83,7 +86,7 @@ class CartPageView(LoginRequiredMixin, View):
 
         user = request.user
         order = Order.objects.get(user=user)
-        order_items = OrderItems.objects.filter(order=order)
+        order_items = OrderItems.objects.filter(order=order, complete=False)
         total = 0
         if order_items.exists():
             for item in order_items:
@@ -112,17 +115,14 @@ def update_item(request):
     if action == 'add':
         if product.max_count > new_items.quantity:
             new_items.quantity += 1
-            print("add")
 
     elif action == 'remove':
         new_items.quantity -= 1
-        print("remove")
 
     new_items.save()
 
     if new_items.quantity <= 0 or action == 'clear':
         new_items.delete()
-        print("clear")
 
     return JsonResponse("Product add: ", safe=False)
 
@@ -130,10 +130,43 @@ def update_item(request):
 class CheckOutView(View):
     def get(self, request):
 
-        return render(request, 'main/checkout.html')
+        cities = City.objects.all()
+        user = request.user.pk
+        order = Order.objects.get(user=user)
+        order_items = OrderItems.objects.filter(order=order)
+        total = 0
+        if order_items.exists():
+            for item in order_items:
+                total = total + item.total_item()
+
+        context = {
+            "orderItems": order_items,
+            'items_count': count_item_product(request),
+            "total": total,
+            "cities": cities,
+        }
+        return render(request, 'main/checkout.html', context=context)
 
     def post(self, request):
+        user = request.user
         tel_number = request.POST['t_number']
-        print(tel_number)
-        return render(request, 'main/checkout.html')
+        address = request.POST['location']
+        delicery_address = DeliveryAddress()
+        delicery_address.order = Order.objects.get(user=user)
+        delicery_address.city = City.objects.filter(name=address)[0]
+        delicery_address.tel_number = tel_number
+        delicery_address.save()
+
+        order = Order.objects.get(user=user)
+        items = OrderItems.objects.filter(order=order)
+        for item in items:
+            product = Product.objects.filter(pk=item.product.pk)[0]
+            product.max_count -= item.quantity
+            product.delete_product()
+            item.delete()
+
+        orderitems = OrderItems.objects.all(complete=False)
+        for orderitem in orderitems:
+            orderitem.check_count()
+        return redirect("home")
 
