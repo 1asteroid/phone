@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from django.db.models import Avg
+from django.db.models import Avg, Count
 
 import json
 from django.views import View
@@ -13,9 +13,16 @@ from django.views.decorators.csrf import csrf_exempt
 
 def count_item_product(request):
     user = request.user
-    order = Order.objects.get(user=user)
-    order_items = OrderItems.objects.filter(order=order)
-    return order_items.count()
+    order_items =[]
+    try:
+        order = Order.objects.get(user=user)
+        order_items = OrderItems.objects.filter(order=order)
+    except:
+        order = None
+    count = 0
+    for item in order_items:
+        count += 1
+    return count
 
 
 class ShopPageView(LoginRequiredMixin, View):
