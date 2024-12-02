@@ -172,7 +172,7 @@ class CheckOutView(View):
             product.delete_product()
             item.delete()
 
-        orderitems = OrderItems.objects.all(complete=False)
+        orderitems = OrderItems.objects.filter(complete=False)
         for orderitem in orderitems:
             orderitem.check_count()
         return redirect("home")
